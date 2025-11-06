@@ -48,15 +48,22 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .sessionManagement(c ->
                         c.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless-session (token-based auth)
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF (Cross-Site Request Forgery) (no need in RESTful API)
                 .authorizeHttpRequests(c -> c // Authorization
+                        .requestMatchers("/swagger-ui/**").permitAll() // for Swagger
+                        .requestMatchers("/swagger-ui.html").permitAll() //,,
+                        .requestMatchers("/v3/api/docs/**").permitAll() // ,,
                         .requestMatchers("/carts/**").permitAll() // expose to public for /carts & any child endpoints
                         .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.POST, "/users").permitAll() // permit POST request to /users endpoint
+                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/products/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT, "/products/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
                         .requestMatchers(HttpMethod.POST, "/checkout/webhook").permitAll()
