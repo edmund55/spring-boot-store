@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(c -> c // Authorization
                         .requestMatchers("/swagger-ui/**").permitAll() // for Swagger
                         .requestMatchers("/swagger-ui.html").permitAll() //,,
-                        .requestMatchers("/v3/api/docs/**").permitAll() // ,,
+                        .requestMatchers("/v3/api-docs/**").permitAll() // ,,
                         .requestMatchers("/carts/**").permitAll() // expose to public for /carts & any child endpoints
                         .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.POST, "/users").permitAll() // permit POST request to /users endpoint
